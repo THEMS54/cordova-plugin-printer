@@ -188,8 +188,15 @@
     else if ([content characterAtIndex:0] == '<')
     {
         dispatch_sync(dispatch_get_main_queue(), ^{
-            item = [[UIMarkupTextPrintFormatter alloc]
-                    initWithMarkupText:content];
+             UIWebView* page                 = [[UIWebView alloc] init];
+            UIViewPrintFormatter* formatter = [page viewPrintFormatter];
+
+            NSString* wwwFilePath = [[NSBundle mainBundle] pathForResource:@"www"
+                                                                    ofType:nil];
+            NSURL* baseURL        = [NSURL fileURLWithPath:wwwFilePath];
+            
+            [page loadHTMLString:content baseURL:baseURL];
+            item = formatter;
         });
     }
     else if ([NSURL URLWithString:content].scheme)
